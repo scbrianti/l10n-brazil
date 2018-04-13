@@ -30,7 +30,7 @@ class CrmLead(models.Model):
                                help="Nome utilizado em documentos fiscais")
     cpf = fields.Char('CPF', size=18)
     rg = fields.Char('RG', size=16)
-
+    
     @api.multi
     @api.constrains('cnpj')
     def _check_cnpj(self):
@@ -118,10 +118,15 @@ class CrmLead(models.Model):
             self.partner_id.id if self.partner_id else False
         )
         if self.partner_id:
-            result['legal_name'] = self.partner_id.legal_name
+            parent_partner = self.partner_id.parent_id
+            result['legal_name'] =parent_partner.legal_name
+            result['cnpj'] = parent_partner.cnpj_cpf
+            result['inscr_est'] = parent_partner.inscr_est
+            result['suframa'] = parent_partner.suframa
+            result['inscr_mun'] = parent_partner.inscr_mun
+            result['name_surname'] = self.partner_id.legal_name
+            result['rg'] = self.partner_id.inscr_est
             result['cpf'] = self.partner_id.cnpj_cpf
-            result['inscr_est'] = self.partner_id.inscr_est
-            result['suframa'] = self.partner_id.suframa
             result['number'] = self.partner_id.number
             result['district'] = self.partner_id.district
             result['l10n_br_city_id'] = \
