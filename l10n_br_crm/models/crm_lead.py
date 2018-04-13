@@ -137,10 +137,15 @@ class CrmLead(models.Model):
                 result['inscr_est'] = parent_partner.inscr_est
                 result['suframa'] = parent_partner.suframa
                 result['inscr_mun'] = parent_partner.inscr_mun
-                result['name_surname'] = self.partner_id.legal_name
+
+                if not self.partner_id.legal_name:
+                    result['name_surname'] = self.partner_id.name
+                else:
+                    result['name_surname'] = self.partner_id.legal_name
+                
                 result['rg'] = self.partner_id.inscr_est
                 result['cpf'] = self.partner_id.cnpj_cpf
-                
+
             result['number'] = self.partner_id.number
             result['district'] = self.partner_id.district
             result['l10n_br_city_id'] = \
